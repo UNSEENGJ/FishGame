@@ -34,6 +34,7 @@ protected:
 
 private:
 
+	/*Mouse Input*/
 	void OnSetCutInputStarted();
 	void OnSetCutTriggered();
 	void OnSetCutReleased();
