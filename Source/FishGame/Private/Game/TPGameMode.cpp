@@ -9,6 +9,7 @@ ATPGameMode::ATPGameMode()
 	MaxRemainTime = 0.f;
 	RemainTime = 0.f;
 
+
 	bDelayedStart = true;
 }
 
@@ -18,10 +19,10 @@ void ATPGameMode::StartMatch()
 	SetMaxRemainTime(45.f);
 
 	// 점수 초기화
-	UpdateScore(0.f);
+	MaxScore = 500.f;
+	Score = MaxScore;
 
 	Super::StartMatch();
-
 
 	// @TODO_Caspian 게임 시작 - 3초 딜레이 후 Input 입력 시작
 }
@@ -62,9 +63,11 @@ void ATPGameMode::UpdateRemainTime(float InNewRemainTime)
 	}
 }
 
-void ATPGameMode::UpdateScore(float InNewScore)
+void ATPGameMode::UpdateScore(float InValue)
 {
-	Score = InNewScore;
+	Score -= InValue;
+
+	// UE_LOG(LOG_TEMP, LOG, TEXT("Score is %f"), Score);
 
 	if (Score <= 0)
 	{

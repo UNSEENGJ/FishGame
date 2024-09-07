@@ -60,7 +60,7 @@ private:
 		float MaxScore;
 
 	/** ���� ����: �ð� ������ ������ �� */
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Score")
 		float Score;
 
 	/** �ְ� ����: �ð� ������ ������ �� */

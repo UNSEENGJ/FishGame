@@ -11,6 +11,9 @@
 #include "FishGame/Character/TPPlayerPawn.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "EngineUtils.h"
+#include <Game/TPGameMode.h>
+#include <Kismet/GameplayStatics.h>
+#include <Game/TPGameMode.h>
 
 
 ATPPlayerController::ATPPlayerController()
@@ -97,7 +100,6 @@ void ATPPlayerController::Move()
 
 void ATPPlayerController::CalculateScore()
 {
-
 	float MinDist = 987654321.f;
 
 	if (SplineBone && Knife)
@@ -120,6 +122,15 @@ void ATPPlayerController::CalculateScore()
 
 	}
 	
+	ATPGameMode* TPGameMode = Cast<ATPGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	float DesiredScoreDifference;
+	float ScoreAdjustmentFactor = 0.1f;
+
+	if (TPGameMode)
+	{
+		DesiredScoreDifference = MinDist * ScoreAdjustmentFactor;
+		TPGameMode->UpdateScore(DesiredScoreDifference);
+	}
 }
 
 void ATPPlayerController::Search()
