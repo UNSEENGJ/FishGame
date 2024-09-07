@@ -6,6 +6,11 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
 
+#include "FishGame/Character/TPPlayerPawn.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "EngineUtils.h"
+
+
 ATPPlayerController::ATPPlayerController()
 {
 	static ConstructorHelpers::FObjectFinder<UInputAction> CutActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Input/InputAction/IA_Cut.IA_Cut'"));
@@ -33,10 +38,7 @@ void ATPPlayerController::SetupInputComponent()
 
 	if (EnhancedInputComponent)
 	{
-		EnhancedInputComponent->BindAction(CutAction, ETriggerEvent::Started, this, &ATPPlayerController::OnSetCutInputStarted);
-		EnhancedInputComponent->BindAction(CutAction, ETriggerEvent::Triggered, this, &ATPPlayerController::OnSetCutTriggered);
-		EnhancedInputComponent->BindAction(CutAction, ETriggerEvent::Completed, this, &ATPPlayerController::OnSetCutReleased);
-		EnhancedInputComponent->BindAction(CutAction, ETriggerEvent::Canceled, this, &ATPPlayerController::OnSetCutReleased);
+		EnhancedInputComponent->BindAction(CutAction, ETriggerEvent::Triggered, this, &ATPPlayerController::Cut);
 	}
 
 }
@@ -44,12 +46,10 @@ void ATPPlayerController::SetupInputComponent()
 void ATPPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	bShowMouseCursor = true;
 
-	FInputModeGameOnly GameOnlyInputMode;
-	SetInputMode(GameOnlyInputMode);
-	
+	Search();
 	SettingIMC();
 }
 
@@ -67,15 +67,60 @@ void ATPPlayerController::SettingIMC()
 	}
 }
 
-//필요없음. 움직임
-void ATPPlayerController::OnSetCutInputStarted()
+void ATPPlayerController::Cut()
 {
+	UE_LOG(LogTemp, Log, TEXT("111"));
+	//반복문 검사 Spline
+	Move();
+	CalculateScore();
 }
 
-void ATPPlayerController::OnSetCutTriggered()
+void ATPPlayerController::Move()
 {
+	if (Knife)
+	{
+		FHitResult HitResult;
+
+		bool bHitSuccessful = GetHitResultUnderCursor(ECC_Visibility, true, HitResult);
+
+		if (bHitSuccessful)
+		{
+			FVector Loc = HitResult.Location;
+
+			Loc.Z = Knife->GetActorLocation().Z;
+
+			Knife->SetActorLocation(Loc);
+		}
+	}
 }
 
-void ATPPlayerController::OnSetCutReleased()
+void ATPPlayerController::CalculateScore()
 {
+
+	float MinDist = 0.f;
+
+	//TArray SplineMesh 가져오기
+	//for문 돌면서
 }
+
+void ATPPlayerController::Search()
+{
+	UWorld* CurrentWorld = GetWorld();
+
+	for (TActorIterator<AActor> It(CurrentWorld); It; ++It)
+	{
+		FString Name = It->GetName();
+
+		if (Name.Contains("Knife"))
+		{
+			Knife = *It;
+		}
+
+		if (Name.Contains("BoneLine"))
+		{
+			SplineBone = *It;
+		}
+	}
+}
+
+

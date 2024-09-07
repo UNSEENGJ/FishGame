@@ -8,6 +8,18 @@ ATPPlayerPawn::ATPPlayerPawn()
 {
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetRelativeLocationAndRotation(FVector(0.f, 0.f, 0.f), FRotator(-90.f,0.f,0.f));
+
 }
+
+void ATPPlayerPawn::BeginPlay()
+{
+	Super::BeginPlay();
+
+
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = this;
+}
+
+
 
 
