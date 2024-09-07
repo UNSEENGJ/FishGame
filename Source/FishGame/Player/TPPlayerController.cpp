@@ -13,6 +13,7 @@
 #include "EngineUtils.h"
 #include <Game/TPGameMode.h>
 #include <Kismet/GameplayStatics.h>
+#include "NiagaraFunctionLibrary.h"
 
 
 ATPPlayerController::ATPPlayerController()
@@ -31,7 +32,13 @@ ATPPlayerController::ATPPlayerController()
 	{
 		InputMappingContext = InputContextMappingRef.Object;
 	}
-
+	
+	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NE(TEXT("/Script/Niagara.NiagaraSystem'/Game/Vefects/Blood_VFX/VFX/Performance_Versions/Bullet_Hits/One_Shot/OS_NS_Bullet_Hit_Tiny_ZeroGravity.OS_NS_Bullet_Hit_Tiny_ZeroGravity'"));
+	if (NE.Succeeded())
+	{
+		FXSystem = NE.Object;
+	}
+	
 	bIsStart = false;
 }
 
@@ -136,9 +143,14 @@ void ATPPlayerController::Move()
 		if (bHitSuccessful)
 		{
 			FVector Loc = HitResult.Location;
-
+			
 			Loc.Z = Knife->GetActorLocation().Z;
+			UNiagaraComponent* ActiveEffect = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), FXSystem, Loc,FRotator::ZeroRotator, FVector(0.1f));
 
+			// if (ActiveEffect)
+			// {
+			// 	ActiveEffect->Activate();
+			// }
 			Knife->SetActorLocation(Loc);
 		}
 	}

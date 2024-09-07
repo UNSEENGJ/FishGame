@@ -7,6 +7,7 @@
 #include "GameFramework/PlayerController.h"
 #include "TPPlayerController.generated.h"
 
+class UNiagaraSystem;
 /**
  * 
  */
@@ -41,6 +42,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<class ATPGameMode> CachedTPGameMode;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
+	UNiagaraSystem* FXSystem;
 
 private:
 
