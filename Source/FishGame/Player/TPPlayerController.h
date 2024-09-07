@@ -41,6 +41,15 @@ protected:
 
 private:
 
+	FVector PrePos;
+	uint8 bIsStart : 1;
+	float PassedDist;
+	float MaxDist;
+
+private:
+
+	void EndCut();
+	void StartCut();
 	/*Mouse Input*/
 	void Cut();
 	void Move();
