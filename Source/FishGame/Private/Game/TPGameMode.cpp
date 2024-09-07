@@ -15,7 +15,7 @@ void ATPGameMode::StartMatch()
 	Super::StartMatch();
 
 	// 시간 초기화
-	SetMaxRemainTime(150.f);
+	SetMaxRemainTime(45.f);
 
 	// 점수 초기화
 	UpdateScore(0.f);
@@ -29,7 +29,7 @@ void ATPGameMode::EndMatch()
 
 	Super::EndMatch();
 
-	UGameplayStatics::OpenLevel(this, OutroLevelName, true);
+	//UGameplayStatics::OpenLevel(this, OutroLevelName, true);
 
 
 	// @TODO_Capian Open Level To show score
@@ -54,6 +54,11 @@ void ATPGameMode::UpdateRemainTime(float InNewRemainTime)
 void ATPGameMode::UpdateScore(float InNewScore)
 {
 	Score = InNewScore;
+
+	if (Score <= 0)
+	{
+		TryToEndMatch(true);
+	}
 }
 
 void ATPGameMode::SetHighScore(float InNewHighScore)
@@ -66,5 +71,28 @@ void ATPGameMode::TryToEndMatch(bool bInEndMatch)
 	if(bMatchEnded != bInEndMatch)
 	{
 		bMatchEnded = bInEndMatch;
+	}
+}
+
+float ATPGameMode::GetRemainTimeRate()
+{
+	if(MaxRemainTime != 0.f)
+	{
+		return RemainTime / MaxRemainTime;
+	}
+
+	return 0.f;
+}
+
+void ATPGameMode::Tick(float DeltaSeconds)
+{
+	float DesiredRemainTime;
+
+	Super::Tick(DeltaSeconds);
+
+	if (IsMatchInProgress())
+	{
+		DesiredRemainTime = RemainTime - DeltaSeconds;
+		UpdateRemainTime(DesiredRemainTime);
 	}
 }
