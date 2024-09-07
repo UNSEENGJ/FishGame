@@ -32,19 +32,8 @@ protected:
 	virtual void SetupInputComponent() override;
 	virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = knife, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class AActor> Knife;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = knife, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class AActor> SplineBone;
-
 private:
 
 	/*Mouse Input*/
-	void Cut();
-	void Move();
-	void CalculateScore();
-	void Search();
-	void SettingIMC();
 
 };
