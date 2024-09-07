@@ -11,6 +11,8 @@
 #include "FishGame/Character/TPPlayerPawn.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "EngineUtils.h"
+#include <Game/TPGameMode.h>
+#include <Kismet/GameplayStatics.h>
 
 
 ATPPlayerController::ATPPlayerController()
@@ -56,6 +58,8 @@ void ATPPlayerController::BeginPlay()
 
 	Search();
 	SettingIMC();
+
+	CachedTPGameMode = Cast<ATPGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 }
 
 void ATPPlayerController::SettingIMC()
@@ -85,6 +89,10 @@ void ATPPlayerController::StartCut()
 		{
 			UE_LOG(LogTemp, Log, TEXT("도착 %lf %lf"),PassedDist, MaxDist);
 			bIsStart = false;
+			if (CachedTPGameMode)
+			{
+				CachedTPGameMode->TryToEndMatch(true);
+			}
 			return;
 		}
 		bIsStart = true;
@@ -105,6 +113,11 @@ void ATPPlayerController::Cut()
 void ATPPlayerController::EndCut()
 {
 	StartCut();
+
+	if (CachedTPGameMode)
+	{
+		CachedTPGameMode->UpdateRemainTime(3.f);
+	}
 }
 
 void ATPPlayerController::Move()
@@ -163,7 +176,15 @@ void ATPPlayerController::CalculateScore()
 		PrePos = CurrentPos;
 	}
 	
+	
+	float DesiredScoreDifference;
+	float ScoreAdjustmentFactor = 0.1f;
 
+	if (CachedTPGameMode)
+	{
+		DesiredScoreDifference = MinDist * ScoreAdjustmentFactor;
+		CachedTPGameMode->UpdateScore(DesiredScoreDifference);
+	}
 }
 
 void ATPPlayerController::Search()
