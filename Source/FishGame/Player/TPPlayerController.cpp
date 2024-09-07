@@ -6,6 +6,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
 
+#include "Components/SplineMeshComponent.h"
+#include "Components/SplineComponent.h"
 #include "FishGame/Character/TPPlayerPawn.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "EngineUtils.h"
@@ -69,7 +71,6 @@ void ATPPlayerController::SettingIMC()
 
 void ATPPlayerController::Cut()
 {
-	UE_LOG(LogTemp, Log, TEXT("111"));
 	//반복문 검사 Spline
 	Move();
 	CalculateScore();
@@ -97,10 +98,28 @@ void ATPPlayerController::Move()
 void ATPPlayerController::CalculateScore()
 {
 
-	float MinDist = 0.f;
+	float MinDist = 987654321.f;
 
-	//TArray SplineMesh 가져오기
-	//for문 돌면서
+	if (SplineBone && Knife)
+	{
+		//TArray SplineMesh 가져오기
+		//for문 돌면서
+		int32 SplineLen = SplineBone->GetNumberOfSplinePoints();
+
+		for (int Idx = 0; Idx < SplineLen-1; Idx++)
+		{
+			FVector PointPos = SplineBone->GetLocationAtSplinePoint(Idx, ESplineCoordinateSpace::World);
+			FVector Loc = Knife->GetActorLocation();
+			Loc.Z = 0;
+			PointPos.Z = 0;
+
+			float Dist = FVector::Dist(PointPos, Loc);
+
+			MinDist = FMath::Min(MinDist, Dist);
+		}
+
+	}
+	
 }
 
 void ATPPlayerController::Search()
@@ -118,7 +137,7 @@ void ATPPlayerController::Search()
 
 		if (Name.Contains("BoneLine"))
 		{
-			SplineBone = *It;
+			SplineBone = It->GetComponentByClass<USplineComponent>();
 		}
 	}
 }

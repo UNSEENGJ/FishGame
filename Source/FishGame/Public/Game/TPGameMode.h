@@ -42,27 +42,27 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 
 private:
-	/** ÃÖ´ë ½Ã°£ */
+	/** ï¿½Ö´ï¿½ ï¿½Ã°ï¿½ */
 	UPROPERTY()
 		float MaxRemainTime;
 
-	/** ³²Àº ½Ã°£ */
+	/** ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Time")
 		float RemainTime;
 
-	/** ÃÖ°í Á¡¼ö */
+	/** ï¿½Ö°ï¿½ ï¿½ï¿½ï¿½ï¿½ */
 	UPROPERTY()
 		float MaxScore;
 
-	/** ÇöÀç Á¡¼ö: ½Ã°£ ³²À¸¸é ±¸ÇöÇÒ °Í */
+	/** ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½: ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ */
 	UPROPERTY()
 		float Score;
 
-	/** ÃÖ°í Á¡¼ö: ½Ã°£ ³²À¸¸é ±¸ÇöÇÒ °Í */
+	/** ï¿½Ö°ï¿½ ï¿½ï¿½ï¿½ï¿½: ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ */
 	UPROPERTY()
 		float HighScore;
 
-	/** °ÔÀÓ Á¾·á ¿©ºÎ */
+	/** ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category="GameState")
 		bool bMatchEnded;
 };

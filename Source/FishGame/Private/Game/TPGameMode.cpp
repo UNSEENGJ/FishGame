@@ -14,13 +14,13 @@ void ATPGameMode::StartMatch()
 {
 	Super::StartMatch();
 
-	// ½Ã°£ ÃÊ±âÈ­
+	// ï¿½Ã°ï¿½ ï¿½Ê±ï¿½È­
 	SetMaxRemainTime(45.f);
 
-	// Á¡¼ö ÃÊ±âÈ­
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
 	UpdateScore(0.f);
 
-	// @TODO_Caspian °ÔÀÓ ½ÃÀÛ - 3ÃÊ µô·¹ÀÌ ÈÄ Input ÀÔ·Â ½ÃÀÛ
+	// @TODO_Caspian ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ - 3ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Input ï¿½Ô·ï¿½ ï¿½ï¿½ï¿½ï¿½
 }
 
 void ATPGameMode::EndMatch()
@@ -63,7 +63,7 @@ void ATPGameMode::UpdateScore(float InNewScore)
 
 void ATPGameMode::SetHighScore(float InNewHighScore)
 {
-	// @TODO_Caspian ÃÖ°í Á¡¼ö¿Í ÀÌ¸§Àº ½Ã°£µÇ¸é ±¸Çö
+	// @TODO_Caspian ï¿½Ö°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½Ç¸ï¿½ ï¿½ï¿½ï¿½ï¿½
 }
 
 void ATPGameMode::TryToEndMatch(bool bInEndMatch)

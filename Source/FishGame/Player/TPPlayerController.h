@@ -32,8 +32,19 @@ protected:
 	virtual void SetupInputComponent() override;
 	virtual void BeginPlay() override;
 
+protected:
+
+	UPROPERTY()
+	TObjectPtr<class AActor> Knife;
+	UPROPERTY()
+	TObjectPtr<class USplineComponent> SplineBone;
+
 private:
 
 	/*Mouse Input*/
-
+	void Cut();
+	void Move();
+	void CalculateScore();
+	void Search();
+	void SettingIMC();
 };
