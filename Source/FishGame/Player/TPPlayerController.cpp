@@ -11,9 +11,6 @@
 #include "FishGame/Character/TPPlayerPawn.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "EngineUtils.h"
-#include <Game/TPGameMode.h>
-#include <Kismet/GameplayStatics.h>
-#include <Game/TPGameMode.h>
 
 
 ATPPlayerController::ATPPlayerController()
@@ -33,6 +30,7 @@ ATPPlayerController::ATPPlayerController()
 		InputMappingContext = InputContextMappingRef.Object;
 	}
 
+	bIsStart = false;
 }
 
 void ATPPlayerController::SetupInputComponent()
@@ -43,7 +41,9 @@ void ATPPlayerController::SetupInputComponent()
 
 	if (EnhancedInputComponent)
 	{
+		EnhancedInputComponent->BindAction(CutAction, ETriggerEvent::Started, this, &ATPPlayerController::StartCut);
 		EnhancedInputComponent->BindAction(CutAction, ETriggerEvent::Triggered, this, &ATPPlayerController::Cut);
+		EnhancedInputComponent->BindAction(CutAction, ETriggerEvent::Completed, this, &ATPPlayerController::EndCut);
 	}
 
 }
@@ -72,11 +72,37 @@ void ATPPlayerController::SettingIMC()
 	}
 }
 
+void ATPPlayerController::StartCut()
+{
+
+	FHitResult HitResult;
+	bool bHitSuccessful = GetHitResultUnderCursor(ECC_GameTraceChannel1, true, HitResult);
+	if (bHitSuccessful)
+	{
+		if (bIsStart)
+		{
+			UE_LOG(LogTemp, Log, TEXT("도착 %lf %lf"),PassedDist, MaxDist);
+			bIsStart = false;
+			return;
+		}
+		bIsStart = true;
+		PassedDist = 0;
+		PrePos = HitResult.Location;
+		PrePos.Z = 0;
+	}
+}
+
 void ATPPlayerController::Cut()
 {
+	if (bIsStart == false) return;
 	//반복문 검사 Spline
 	Move();
 	CalculateScore();
+}
+
+void ATPPlayerController::EndCut()
+{
+	StartCut();
 }
 
 void ATPPlayerController::Move()
@@ -100,6 +126,7 @@ void ATPPlayerController::Move()
 
 void ATPPlayerController::CalculateScore()
 {
+
 	float MinDist = 987654321.f;
 
 	if (SplineBone && Knife)
@@ -107,7 +134,8 @@ void ATPPlayerController::CalculateScore()
 		//TArray SplineMesh 가져오기
 		//for문 돌면서
 		int32 SplineLen = SplineBone->GetNumberOfSplinePoints();
-
+		int MinIdx = 0;
+		PrePos.Z = 0;
 		for (int Idx = 0; Idx < SplineLen-1; Idx++)
 		{
 			FVector PointPos = SplineBone->GetLocationAtSplinePoint(Idx, ESplineCoordinateSpace::World);
@@ -117,20 +145,22 @@ void ATPPlayerController::CalculateScore()
 
 			float Dist = FVector::Dist(PointPos, Loc);
 
-			MinDist = FMath::Min(MinDist, Dist);
+			if (MinDist > Dist)
+			{
+				MinDist = Dist;
+				MinIdx = Idx;
+			}
 		}
 
+		FVector CurrentPos = SplineBone->GetLocationAtSplinePoint(MinIdx, ESplineCoordinateSpace::World);
+		CurrentPos.Z = 0;
+		float Dist = FVector::Dist(PrePos, CurrentPos);
+		PassedDist += Dist;
+
+		PrePos = CurrentPos;
 	}
 	
-	ATPGameMode* TPGameMode = Cast<ATPGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	float DesiredScoreDifference;
-	float ScoreAdjustmentFactor = 0.1f;
 
-	if (TPGameMode)
-	{
-		DesiredScoreDifference = MinDist * ScoreAdjustmentFactor;
-		TPGameMode->UpdateScore(DesiredScoreDifference);
-	}
 }
 
 void ATPPlayerController::Search()
@@ -149,6 +179,7 @@ void ATPPlayerController::Search()
 		if (Name.Contains("BoneLine"))
 		{
 			SplineBone = It->GetComponentByClass<USplineComponent>();
+			MaxDist = SplineBone->GetSplineLength();
 		}
 	}
 }
