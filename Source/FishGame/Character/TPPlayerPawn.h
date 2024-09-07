@@ -15,8 +15,11 @@ public:
 	// Sets default values for this pawn's properties
 	ATPPlayerPawn();
 
+	void BeginPlay() override;
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UCameraComponent> Camera;
+
 };

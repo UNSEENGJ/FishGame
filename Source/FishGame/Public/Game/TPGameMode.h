@@ -36,13 +36,18 @@ public:
 	UFUNCTION()
 		void TryToEndMatch(bool bInEndMatch);
 
+	UFUNCTION(BlueprintCallable)
+		float GetRemainTimeRate();
+
+	virtual void Tick(float DeltaSeconds) override;
+
 private:
 	/** 최대 시간 */
 	UPROPERTY()
 		float MaxRemainTime;
 
 	/** 남은 시간 */
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Time")
 		float RemainTime;
 
 	/** 최고 점수 */
