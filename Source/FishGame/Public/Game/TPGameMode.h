@@ -18,6 +18,8 @@ class FISHGAME_API ATPGameMode : public AGameMode
 
 	virtual void EndMatch() override;
 	
+	virtual void BeginPlay() override;
+
 public:
 	ATPGameMode();
 
@@ -32,6 +34,9 @@ public:
 
 	UFUNCTION()
 		void SetHighScore(float InNewHighScore);
+
+	UFUNCTION()
+		void TryToStartMatch();
 
 	UFUNCTION()
 		void TryToEndMatch(bool bInEndMatch);
@@ -61,6 +66,10 @@ private:
 	/** 최고 점수: 시간 남으면 구현할 것 */
 	UPROPERTY()
 		float HighScore;
+
+	/** 게임 종료 여부 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "GameState")
+		bool bStartMatch;
 
 	/** 게임 종료 여부 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category="GameState")

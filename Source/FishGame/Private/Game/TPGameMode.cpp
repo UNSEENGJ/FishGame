@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Game/TPGameMode.h"
@@ -8,19 +8,22 @@ ATPGameMode::ATPGameMode()
 {
 	MaxRemainTime = 0.f;
 	RemainTime = 0.f;
+
+	bDelayedStart = true;
 }
 
 void ATPGameMode::StartMatch()
 {
-	Super::StartMatch();
-
-	// ½Ã°£ ÃÊ±âÈ­
+	// ì‹œê°„ ì´ˆê¸°í™”
 	SetMaxRemainTime(45.f);
 
-	// Á¡¼ö ÃÊ±âÈ­
+	// ì ìˆ˜ ì´ˆê¸°í™”
 	UpdateScore(0.f);
 
-	// @TODO_Caspian °ÔÀÓ ½ÃÀÛ - 3ÃÊ µô·¹ÀÌ ÈÄ Input ÀÔ·Â ½ÃÀÛ
+	Super::StartMatch();
+
+
+	// @TODO_Caspian ê²Œì„ ì‹œì‘ - 3ì´ˆ ë”œë ˆì´ í›„ Input ì…ë ¥ ì‹œì‘
 }
 
 void ATPGameMode::EndMatch()
@@ -29,10 +32,18 @@ void ATPGameMode::EndMatch()
 
 	Super::EndMatch();
 
-	//UGameplayStatics::OpenLevel(this, OutroLevelName, true);
-
+	UGameplayStatics::OpenLevel(this, OutroLevelName, true);
 
 	// @TODO_Capian Open Level To show score
+}
+
+void ATPGameMode::BeginPlay()
+{
+	FTimerHandle MyTimerHandle;
+
+	Super::BeginPlay();
+
+	GetWorldTimerManager().SetTimer(MyTimerHandle, this, &ATPGameMode::TryToStartMatch, 3, false);
 }
 
 void ATPGameMode::SetMaxRemainTime(float InMaxRemainTime)
@@ -63,12 +74,21 @@ void ATPGameMode::UpdateScore(float InNewScore)
 
 void ATPGameMode::SetHighScore(float InNewHighScore)
 {
-	// @TODO_Caspian ÃÖ°í Á¡¼ö¿Í ÀÌ¸§Àº ½Ã°£µÇ¸é ±¸Çö
+	// @TODO_Caspian ìµœê³  ì ìˆ˜ì™€ ì´ë¦„ì€ ì‹œê°„ë˜ë©´ êµ¬í˜„
+}
+
+void ATPGameMode::TryToStartMatch()
+{
+	if (IsMatchInProgress() == false)
+	{
+		bDelayedStart = false;
+		bStartMatch = true;
+	}
 }
 
 void ATPGameMode::TryToEndMatch(bool bInEndMatch)
 {
-	if(bMatchEnded != bInEndMatch)
+	if(IsMatchInProgress() && bMatchEnded != bInEndMatch)
 	{
 		bMatchEnded = bInEndMatch;
 	}
@@ -78,7 +98,7 @@ float ATPGameMode::GetRemainTimeRate()
 {
 	if(MaxRemainTime != 0.f)
 	{
-		return RemainTime / MaxRemainTime;
+		return 1 - (RemainTime / MaxRemainTime);
 	}
 
 	return 0.f;
