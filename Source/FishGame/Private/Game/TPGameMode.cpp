@@ -45,7 +45,8 @@ void ATPGameMode::BeginPlay()
 
 	Super::BeginPlay();
 
-	GetWorldTimerManager().SetTimer(MyTimerHandle, this, &ATPGameMode::TryToStartMatch, 3, false);
+	TryToStartMatch();
+	// GetWorldTimerManager().SetTimer(MyTimerHandle, this, &ATPGameMode::TryToStartMatch, 3, false);
 }
 
 void ATPGameMode::SetMaxRemainTime(float InMaxRemainTime)
@@ -59,8 +60,9 @@ void ATPGameMode::UpdateRemainTime(float InNewRemainTime)
 	RemainTime -= InNewRemainTime;
 
 	if (RemainTime <= 0)
-	{
+	{	
 		TryToEndMatch(true);
+		SetGameResult(ETPGameResult::ETPGameResult_Trash);
 	}
 }
 
@@ -73,6 +75,7 @@ void ATPGameMode::UpdateScore(float InValue)
 	if (Score <= 0)
 	{
 		TryToEndMatch(true);
+		SetGameResult(ETPGameResult::ETPGameResult_Trash);
 	}
 }
 

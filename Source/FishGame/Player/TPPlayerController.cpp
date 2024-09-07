@@ -92,6 +92,10 @@ void ATPPlayerController::StartCut()
 			if (CachedTPGameMode)
 			{
 				CachedTPGameMode->TryToEndMatch(true);
+				if (PassedDist < MaxDist)
+				{
+					CachedTPGameMode->SetGameResult(ETPGameResult::ETPGameResult_Trash);
+				}
 			}
 			return;
 		}
