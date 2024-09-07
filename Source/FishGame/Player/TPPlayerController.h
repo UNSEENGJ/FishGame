@@ -39,6 +39,9 @@ protected:
 	UPROPERTY()
 	TObjectPtr<class USplineComponent> SplineBone;
 
+	UPROPERTY()
+	TObjectPtr<class ATPGameMode> CachedTPGameMode;
+
 private:
 
 	FVector PrePos;

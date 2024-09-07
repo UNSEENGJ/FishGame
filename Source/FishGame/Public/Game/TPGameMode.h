@@ -6,6 +6,14 @@
 #include "GameFramework/GameMode.h"
 #include "TPGameMode.generated.h"
 
+UENUM(BlueprintType)
+enum class ETPGameResult : uint8
+{
+	ETPGameResult_Trash,
+	ETPGameResult_Perfect,
+	ETPGameResult_Hmm
+};
+
 /**
  * 
  */
@@ -46,6 +54,15 @@ public:
 
 	virtual void Tick(float DeltaSeconds) override;
 
+	UFUNCTION(BlueprintCallable)
+		ETPGameResult GetGameResult();
+
+	UFUNCTION()
+		void SetGameResult(ETPGameResult InGameResult);
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void ShowResultWindow();
+
 private:
 	/** �ִ� �ð� */
 	UPROPERTY()
@@ -74,4 +91,7 @@ private:
 	/** ���� ���� ���� */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category="GameState")
 		bool bMatchEnded;
+
+	UPROPERTY()
+		ETPGameResult GameResult;
 };

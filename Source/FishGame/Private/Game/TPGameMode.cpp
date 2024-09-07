@@ -33,8 +33,9 @@ void ATPGameMode::EndMatch()
 
 	Super::EndMatch();
 
-	UGameplayStatics::OpenLevel(this, OutroLevelName, true);
+	//UGameplayStatics::OpenLevel(this, OutroLevelName, true);
 
+	ShowResultWindow();
 	// @TODO_Capian Open Level To show score
 }
 
@@ -44,7 +45,8 @@ void ATPGameMode::BeginPlay()
 
 	Super::BeginPlay();
 
-	GetWorldTimerManager().SetTimer(MyTimerHandle, this, &ATPGameMode::TryToStartMatch, 3, false);
+	TryToStartMatch();
+	// GetWorldTimerManager().SetTimer(MyTimerHandle, this, &ATPGameMode::TryToStartMatch, 3, false);
 }
 
 void ATPGameMode::SetMaxRemainTime(float InMaxRemainTime)
@@ -55,11 +57,12 @@ void ATPGameMode::SetMaxRemainTime(float InMaxRemainTime)
 
 void ATPGameMode::UpdateRemainTime(float InNewRemainTime)
 {
-	RemainTime = (InNewRemainTime > 0) ? InNewRemainTime : 0;
+	RemainTime -= InNewRemainTime;
 
 	if (RemainTime <= 0)
-	{
+	{	
 		TryToEndMatch(true);
+		SetGameResult(ETPGameResult::ETPGameResult_Trash);
 	}
 }
 
@@ -72,6 +75,7 @@ void ATPGameMode::UpdateScore(float InValue)
 	if (Score <= 0)
 	{
 		TryToEndMatch(true);
+		SetGameResult(ETPGameResult::ETPGameResult_Trash);
 	}
 }
 
@@ -94,6 +98,23 @@ void ATPGameMode::TryToEndMatch(bool bInEndMatch)
 {
 	if(IsMatchInProgress() && bMatchEnded != bInEndMatch)
 	{
+		ETPGameResult DesiredGameResult;
+
+		DesiredGameResult = ETPGameResult::ETPGameResult_Trash;
+		if (Score > 350.f)
+		{
+			DesiredGameResult = ETPGameResult::ETPGameResult_Perfect;
+		}
+		else if (Score > 150.f)
+		{
+			DesiredGameResult = ETPGameResult::ETPGameResult_Hmm;
+		}
+		else
+		{
+			DesiredGameResult = ETPGameResult::ETPGameResult_Trash;
+		}
+
+		SetGameResult(DesiredGameResult);
 		bMatchEnded = bInEndMatch;
 	}
 }
@@ -110,13 +131,20 @@ float ATPGameMode::GetRemainTimeRate()
 
 void ATPGameMode::Tick(float DeltaSeconds)
 {
-	float DesiredRemainTime;
-
 	Super::Tick(DeltaSeconds);
 
 	if (IsMatchInProgress())
 	{
-		DesiredRemainTime = RemainTime - DeltaSeconds;
-		UpdateRemainTime(DesiredRemainTime);
+		UpdateRemainTime(DeltaSeconds);
 	}
+}
+
+ETPGameResult ATPGameMode::GetGameResult()
+{
+	return GameResult;
+}
+
+void ATPGameMode::SetGameResult(ETPGameResult InGameResult)
+{
+	GameResult = InGameResult;
 }
