@@ -79,6 +79,8 @@ void ATPPlayerController::StartCut()
 	bool bHitSuccessful = GetHitResultUnderCursor(ECC_GameTraceChannel1, true, HitResult);
 	if (bHitSuccessful)
 	{
+		UE_LOG(LogTemp, Log, TEXT("Start"));
+
 		if (bIsStart)
 		{
 			UE_LOG(LogTemp, Log, TEXT("도착 %lf %lf"),PassedDist, MaxDist);
@@ -94,9 +96,9 @@ void ATPPlayerController::StartCut()
 
 void ATPPlayerController::Cut()
 {
+	Move();
 	if (bIsStart == false) return;
 	//반복문 검사 Spline
-	Move();
 	CalculateScore();
 }
 
@@ -109,6 +111,7 @@ void ATPPlayerController::Move()
 {
 	if (Knife)
 	{
+
 		FHitResult HitResult;
 
 		bool bHitSuccessful = GetHitResultUnderCursor(ECC_Visibility, true, HitResult);
